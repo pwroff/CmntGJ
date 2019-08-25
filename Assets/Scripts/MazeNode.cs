@@ -52,9 +52,8 @@ public class MazeNode
 
     public void BuildTile()
     {
-        gameObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        gameObject = GameObject.Instantiate(configuration.floorPrefab);
         gameObject.name = string.Format("Floor-{0}-{1}", configuration.gridPosition.x, configuration.gridPosition.y);
-        gameObject.transform.Rotate(new Vector3(90, 0, 0));
         gameObject.transform.parent = configuration.tilesParent;
         gameObject.transform.localScale = Vector3.one * configuration.tileDimension;
         gameObject.transform.localPosition = new Vector3(configuration.gridPosition.x * configuration.tileDimension, 0, configuration.gridPosition.y * configuration.tileDimension);
@@ -62,7 +61,7 @@ public class MazeNode
         {
             if (neighbors[i] == null)
             {
-                var wall =  GameObject.CreatePrimitive(PrimitiveType.Quad);
+                var wall =  GameObject.Instantiate(configuration.wallPrefab);
                 wall.name = "wall" + i;
                 wall.transform.parent = gameObject.transform;
                 wall.transform.localScale = Vector3.one;
@@ -79,13 +78,13 @@ public class MazeNode
         switch (i)
         {
             case 0:
-                return new Vector3(0, 0.5f, 0.5f);
+                return new Vector3(0, 0, 0.5f);
             case 1:
-                return new Vector3(0.5f, 0.5f, 0);
+                return new Vector3(0.5f, 0, 0);
             case 2:
-                return new Vector3(0, 0.5f, -0.5f);
+                return new Vector3(0, 0, -0.5f);
             case 3:
-                return new Vector3(-0.5f, 0.5f, 0);
+                return new Vector3(-0.5f, 0, 0);
 
             default:
                 return default;

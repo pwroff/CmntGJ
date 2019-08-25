@@ -9,7 +9,8 @@ public class MazeGenerator : MonoBehaviour
     public Texture2D source;
     public float tileDimension = 1f;
     public Transform parent;
-
+    public GameObject floorPrefab;
+    public GameObject wallPrefab;
 
     [SerializeField, HideInInspector]
     MazeNode[,] tiles;
@@ -58,7 +59,9 @@ public class MazeGenerator : MonoBehaviour
                         {
                             tilesParent = parent,
                             tileDimension = tileDimension,
-                            gridPosition = new Vector2Int(x, y)
+                            gridPosition = new Vector2Int(x, y),
+                            floorPrefab = floorPrefab,
+                            wallPrefab = wallPrefab
                         };
                         tiles[x, y] = new MazeNode(config);
                     }
