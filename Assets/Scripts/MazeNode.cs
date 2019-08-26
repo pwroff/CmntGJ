@@ -50,12 +50,12 @@ public class MazeNode
         neighbors[direction] = node;
     }
 
-    public void BuildTile()
+    public void BuildTile(bool applyScale)
     {
         gameObject = GameObject.Instantiate(configuration.floorPrefab);
         gameObject.name = string.Format("Floor-{0}-{1}", configuration.gridPosition.x, configuration.gridPosition.y);
         gameObject.transform.parent = configuration.tilesParent;
-        gameObject.transform.localScale = Vector3.one * configuration.tileDimension;
+        gameObject.transform.localScale = applyScale ? Vector3.one * configuration.tileDimension : Vector3.one;
         gameObject.transform.localPosition = new Vector3(configuration.gridPosition.x * configuration.tileDimension, 0, configuration.gridPosition.y * configuration.tileDimension);
         for (int i = 0; i < 4; i++)
         {

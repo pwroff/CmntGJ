@@ -11,6 +11,7 @@ public class MazeGenerator : MonoBehaviour
     public Transform parent;
     public GameObject floorPrefab;
     public GameObject wallPrefab;
+    public bool scaleTileByDimension = true;
 
     [SerializeField, HideInInspector]
     MazeNode[,] tiles;
@@ -123,7 +124,7 @@ public class MazeGenerator : MonoBehaviour
             for (int x = 0; x < source.width; x++)
             {
                 if (tiles[x, y] != null)
-                    tiles[x, y].BuildTile();
+                    tiles[x, y].BuildTile(scaleTileByDimension);
             }
         }
     }
