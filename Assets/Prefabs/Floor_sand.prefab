@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6724892549272427304}
   m_Layer: 0
-  m_Name: Floor
+  m_Name: Floor_sand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 4324133633319180541}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4.5499, y: 4.5499, z: 4.5499}
   m_Children:
   - {fileID: 4747231080025410060}
   m_Father: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 1575361530451535343}
   m_Layer: 0
   m_Name: floor_mesh
-  m_TagString: Untagged
+  m_TagString: Sand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -89,7 +89,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f6e48ab60e69a4b1bba7a002ce55c81f, type: 2}
+  - {fileID: 2100000, guid: 0b1240d4fa7f546b689e4cb4ca279520, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -121,7 +121,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Size: {x: 3, y: 0.1, z: 3}
   m_Center: {x: 0, y: -0.05, z: 0}
 --- !u!1 &8027073598097359113
 GameObject:

@@ -21,11 +21,17 @@ public class PlayerController : MonoBehaviour
 
     private float initialHeadYOffset;
 
+    Footsteps footstepController;
+    public float footstepCooldown = 0.6f;
+    public float minSpeedForFootsteps = 0.1f;
+    float lastFootstep;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         initialHeadYOffset = head.localPosition.y;
+        footstepController = GetComponent<Footsteps>();
     }
 
     void Move(Vector3 movement, float maxMovementSpeed)
@@ -51,6 +57,15 @@ public class PlayerController : MonoBehaviour
             maxmvSpeedForframe *= sprintModifier;
             wasSprint = true;
         }
+
+        //not sure how you want to do footsteps so I'll just put somethign simple here with a timeout if
+        //the player is walking faster than a certain speed, feel free to replace with something better.
+        if (movementForFrame.sqrMagnitude > minSpeedForFootsteps &&
+            (Time.time - lastFootstep > footstepCooldown  || wasSprint && Time.time - lastFootstep > footstepCooldown * 0.5f)) {
+            lastFootstep = Time.time;
+            footstepController.PlayFootstepSound();
+        }
+
         Move(movementForFrame, maxmvSpeedForframe);
     }
 
