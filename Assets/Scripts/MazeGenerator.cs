@@ -11,6 +11,8 @@ public class MazeGenerator : MonoBehaviour
     public Transform parent;
     public GameObject floorPrefab;
     public GameObject wallPrefab;
+    public GameObject cornerOutPrefab;
+    public GameObject cornerInsPrefab;
     public bool scaleTileByDimension = true;
 
     [SerializeField, HideInInspector]
@@ -62,7 +64,9 @@ public class MazeGenerator : MonoBehaviour
                             tileDimension = tileDimension,
                             gridPosition = new Vector2Int(x, y),
                             floorPrefab = floorPrefab,
-                            wallPrefab = wallPrefab
+                            wallPrefab = wallPrefab,
+                            outerCornerPrefab = cornerOutPrefab,
+                            innerCornerPrefab = cornerInsPrefab
                         };
                         tiles[x, y] = new MazeNode(config);
                     }
@@ -83,6 +87,10 @@ public class MazeGenerator : MonoBehaviour
                         tiles[x, y].SetNeighbor(1, GetNeighbor(x + 1, y));
                         tiles[x, y].SetNeighbor(2, GetNeighbor(x, y - 1));
                         tiles[x, y].SetNeighbor(3, GetNeighbor(x - 1, y));
+                        tiles[x, y].SetNeighbor(4, GetNeighbor(x + 1, y + 1));
+                        tiles[x, y].SetNeighbor(5, GetNeighbor(x + 1, y - 1));
+                        tiles[x, y].SetNeighbor(6, GetNeighbor(x - 1, y - 1));
+                        tiles[x, y].SetNeighbor(7, GetNeighbor(x - 1, y + 1));
                     }
 
                 }
@@ -96,6 +104,7 @@ public class MazeGenerator : MonoBehaviour
 
         Action<Action<int>> enableRun = (a) =>
         {
+            Mutex m = new Mutex();
             readyThreads = 0;
             for (int i = 0; i < maxThreads - 1; i++)
             {
@@ -103,12 +112,16 @@ public class MazeGenerator : MonoBehaviour
                 var t = new Thread(() =>
                 {
                     a(i * itemsPerThread);
+                    m.WaitOne();
                     readyThreads++;
+                    m.ReleaseMutex();
                 });
                 t.Start();
             }
             a(reminder);
+            m.WaitOne();
             readyThreads++;
+            m.ReleaseMutex();
             while (readyThreads < maxThreads)
             {
                 Thread.Sleep(50);

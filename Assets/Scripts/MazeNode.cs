@@ -13,12 +13,14 @@ public class MazeNode
         public Transform tilesParent;
         public GameObject floorPrefab;
         public GameObject wallPrefab;
+        public GameObject innerCornerPrefab;
+        public GameObject outerCornerPrefab;
         public Vector2Int gridPosition;
         public float tileDimension;
     }
 
     [SerializeField, HideInInspector]
-    MazeNode[] neighbors = new MazeNode[4];
+    MazeNode[] neighbors = new MazeNode[8];
 
     MazeConfiguration configuration;
     GameObject gameObject;
@@ -26,13 +28,14 @@ public class MazeNode
     public MazeNode(MazeConfiguration configuration)
     {
         this.configuration = configuration;
+        neighbors = new MazeNode[8];
     }
 
     [Conditional("UNITY_EDITOR")]
     void EnsureAndThrow(ref int direction)
     {
-        if (direction < 0 || direction > 4)
-            throw new System.Exception("There are only 4 available directions in our world");
+        if (direction < 0 || direction > 8)
+            throw new System.Exception("There are only 8 available directions in our world");
     }
 
     /// <summary>
@@ -41,6 +44,10 @@ public class MazeNode
     /// 1: east/right
     /// 2: south/back
     /// 3: west/left
+    /// 4: north-east
+    /// 5: east-south
+    /// 6: south-west
+    /// 7: west-north
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="node"></param>
@@ -69,6 +76,71 @@ public class MazeNode
                 wall.transform.position = gameObject.transform.position + configuration.tileDimension * GetLocalPositionForOrientation(i);
                 wall.transform.Rotate(new Vector3(0, i * 90, 0));
             }
+        }
+
+        BuildCorners();
+    }
+
+    void BuildCorners()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            // Calculate for patch 2x2
+            var n = neighbors[i];
+            var adj = neighbors[i + 4];
+            var n1 = neighbors[(i + 1) % 4];
+            if (n != null && adj != null && n1 != null)
+            {
+                // no corner, tiles are touching each other in the middle
+                continue;
+            }
+
+            if (n == null && n1 != null || n1 == null && n != null)
+            {
+                // corridor
+                continue;
+            }
+            GameObject corner;
+            if (n1 != null && n != null)
+            {
+                // solve for outer corner
+                if (configuration.outerCornerPrefab == null)
+                    continue;
+                corner = GameObject.Instantiate(configuration.outerCornerPrefab);
+            }
+            else
+            {
+                if (configuration.innerCornerPrefab == null)
+                    continue;
+                // solve for inner corner
+                corner = GameObject.Instantiate(configuration.innerCornerPrefab);
+            }
+            Vector3 cornerRotation = new Vector3(0, (i + 1) * 90 - 45, 0);
+            Vector3 cornerLocation = gameObject.transform.position + configuration.tileDimension * GetCornerLocation(i);
+            corner.transform.parent = gameObject.transform;
+            corner.transform.localScale = Vector3.one;
+            corner.transform.rotation = Quaternion.identity;
+            corner.transform.position = cornerLocation;
+            corner.transform.Rotate(cornerRotation);
+        }
+    }
+
+    Vector3 GetCornerLocation(int i)
+    {
+        EnsureAndThrow(ref i);
+        switch (i)
+        {
+            case 0:
+                return new Vector3(0.5f, 0, 0.5f);
+            case 1:
+                return new Vector3(0.5f, 0, -0.5f);
+            case 2:
+                return new Vector3(-0.5f, 0, -0.5f);
+            case 3:
+                return new Vector3(-0.5f, 0, 0.5f);
+
+            default:
+                return default;
         }
     }
 
